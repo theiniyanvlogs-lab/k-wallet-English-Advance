@@ -25,7 +25,7 @@ export default async function handler(req, res) {
 
     const instagramLink =
       "https://www.instagram.com/explore/tags/" +
-      message.replace(/\s+/g, "");
+      encodeURIComponent(message.replace(/\s+/g, ""));
 
     // ===============================
     // ✅ Call Groq API
@@ -54,9 +54,21 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
+    // ===============================
+    // ✅ Handle Groq API Errors
+    // ===============================
     if (!response.ok) {
       return res.status(500).json({
         error: data.error?.message || "Groq API failed",
+      });
+    }
+
+    // ===============================
+    // ✅ Safe Reply Check
+    // ===============================
+    if (!data.choices || !data.choices[0]?.message?.content) {
+      return res.status(500).json({
+        error: "No reply received from Groq API",
       });
     }
 
