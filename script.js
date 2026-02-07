@@ -1,7 +1,7 @@
-console.log("✅ script.js loaded successfully");
+console.log("✅ Script Loaded");
 
 // ===============================
-// ✅ Send Message Function
+// ✅ Send Message
 // ===============================
 async function sendMessage() {
 
@@ -12,25 +12,22 @@ async function sendMessage() {
 
   let chatBox = document.getElementById("chatBox");
 
-  input.disabled = true;
-
-  // Show user message
+  // User Message
   chatBox.innerHTML += `
     <div class="msg user">${escapeHTML(msg)}</div>
   `;
 
   input.value = "";
 
-  // Bot placeholder
+  // Bot Placeholder
   let botDiv = document.createElement("div");
   botDiv.className = "msg bot";
-  botDiv.innerHTML = `<p>🤖 Thinking...</p>`;
+  botDiv.innerHTML = "🤖 Thinking...";
   chatBox.appendChild(botDiv);
 
-  scrollToBottom(chatBox);
+  scrollToBottom();
 
   try {
-
     let response = await fetch("/api/chat", {
       method: "POST",
       headers: {
@@ -42,53 +39,39 @@ async function sendMessage() {
     let data = await response.json();
 
     if (!data.reply) {
-      botDiv.innerHTML = "⚠️ No reply received";
-      input.disabled = false;
+      botDiv.innerHTML = "⚠️ No reply received.";
       return;
     }
 
-    // Bot reply
+    // Bot Reply + Buttons
     botDiv.innerHTML = `
       <p>${escapeHTML(data.reply)}</p>
+
+      <div class="bot-links">
+        <a href="${data.youtube}" target="_blank" class="yt-btn">
+          📺 YouTube
+        </a>
+
+        <a href="${data.instagram}" target="_blank" class="insta-btn">
+          📸 Instagram
+        </a>
+      </div>
     `;
 
-    // ✅ Update Related Links Safely
-    let yt = document.getElementById("youtubeLink");
-    let ig = document.getElementById("instagramLink");
-
-    if (yt && data.youtube) {
-      yt.href = data.youtube;
-      yt.innerText = "Open YouTube Results";
-    }
-
-    if (ig && data.instagram) {
-      ig.href = data.instagram;
-      ig.innerText = "Open Instagram Tag";
-    }
-
   } catch (err) {
-    botDiv.innerHTML = "❌ Server not responding.";
+    botDiv.innerHTML = "❌ Server Error.";
   }
 
-  input.disabled = false;
-  input.focus();
-  scrollToBottom(chatBox);
+  scrollToBottom();
 }
 
 // ===============================
-// ✅ Voice Function (Desktop Only)
+// ✅ Voice Input (Desktop Only Support)
 // ===============================
 function startVoice() {
 
-  let isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-  if (isMobile) {
-    alert("⚠️ Voice input not supported properly on Android. Use Chromebook/Desktop.");
-    return;
-  }
-
   if (!("webkitSpeechRecognition" in window)) {
-    alert("❌ Voice recognition not supported.");
+    alert("⚠️ Voice not supported on this device.");
     return;
   }
 
@@ -97,17 +80,9 @@ function startVoice() {
 
   recognition.start();
 
-  document.getElementById("userInput").placeholder =
-    "🎤 Listening... Speak now";
-
   recognition.onresult = function (event) {
     document.getElementById("userInput").value =
       event.results[0][0].transcript;
-  };
-
-  recognition.onend = function () {
-    document.getElementById("userInput").placeholder =
-      "Type your message...";
   };
 }
 
@@ -121,7 +96,8 @@ function clearChat() {
 // ===============================
 // ✅ Scroll Bottom
 // ===============================
-function scrollToBottom(chatBox) {
+function scrollToBottom() {
+  let chatBox = document.getElementById("chatBox");
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
