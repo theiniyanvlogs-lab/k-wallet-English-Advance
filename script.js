@@ -1,84 +1,142 @@
+console.log("✅ script.js loaded successfully");
+
 // ===============================
-// ✅ Voice Input Function (Final Safe Version)
+// ✅ Send Message Function
+// ===============================
+async function sendMessage() {
+
+  let input = document.getElementById("userInput");
+  let msg = input.value.trim();
+
+  if (msg === "") return;
+
+  let chatBox = document.getElementById("chatBox");
+
+  input.disabled = true;
+
+  // Show user message
+  chatBox.innerHTML += `
+    <div class="msg user">${escapeHTML(msg)}</div>
+  `;
+
+  input.value = "";
+
+  // Bot placeholder
+  let botDiv = document.createElement("div");
+  botDiv.className = "msg bot";
+  botDiv.innerHTML = `<p>🤖 Thinking...</p>`;
+  chatBox.appendChild(botDiv);
+
+  scrollToBottom(chatBox);
+
+  try {
+
+    let response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message: msg })
+    });
+
+    let data = await response.json();
+
+    if (!data.reply) {
+      botDiv.innerHTML = "⚠️ No reply received";
+      input.disabled = false;
+      return;
+    }
+
+    // Bot reply
+    botDiv.innerHTML = `
+      <p>${escapeHTML(data.reply)}</p>
+    `;
+
+    // ✅ Update Related Links Safely
+    let yt = document.getElementById("youtubeLink");
+    let ig = document.getElementById("instagramLink");
+
+    if (yt && data.youtube) {
+      yt.href = data.youtube;
+      yt.innerText = "Open YouTube Results";
+    }
+
+    if (ig && data.instagram) {
+      ig.href = data.instagram;
+      ig.innerText = "Open Instagram Tag";
+    }
+
+  } catch (err) {
+    botDiv.innerHTML = "❌ Server not responding.";
+  }
+
+  input.disabled = false;
+  input.focus();
+  scrollToBottom(chatBox);
+}
+
+// ===============================
+// ✅ Voice Function (Desktop Only)
 // ===============================
 function startVoice() {
 
-  // ✅ Detect Mobile Device
   let isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-  // ❌ Android/iPhone Browsers Do Not Support Proper Speech API
   if (isMobile) {
-    alert(
-      "⚠️ Voice input is not working properly on Android/iPhone browsers.\n\nPlease use Chromebook/Desktop Chrome for Voice Support."
-    );
+    alert("⚠️ Voice input not supported properly on Android. Use Chromebook/Desktop.");
     return;
   }
 
-  // ✅ Play Mic Click Sound (Desktop Only)
-  try {
-    let sound = new Audio("click.mp3");
-    sound.play();
-  } catch (e) {
-    console.log("Sound play blocked:", e);
-  }
-
-  // ✅ Check Browser Support
   if (!("webkitSpeechRecognition" in window)) {
-    alert("❌ Voice recognition not supported in this browser.");
+    alert("❌ Voice recognition not supported.");
     return;
   }
 
-  // ✅ Create Recognition Object
   let recognition = new webkitSpeechRecognition();
-
   recognition.lang = "en-US";
-  recognition.continuous = false;
-  recognition.interimResults = false;
 
-  // ✅ Start Listening
   recognition.start();
 
-  // UI Update
-  let inputBox = document.getElementById("userInput");
-  inputBox.placeholder = "🎤 Listening... Speak now";
+  document.getElementById("userInput").placeholder =
+    "🎤 Listening... Speak now";
 
-  // ===============================
-  // ✅ Voice Result
-  // ===============================
   recognition.onresult = function (event) {
-    let voiceText = event.results[0][0].transcript;
-
-    // Put voice text into input box
-    inputBox.value = voiceText;
-
-    // Restore placeholder
-    inputBox.placeholder = "Type your message...";
+    document.getElementById("userInput").value =
+      event.results[0][0].transcript;
   };
 
-  // ===============================
-  // ✅ Voice Error Handling
-  // ===============================
-  recognition.onerror = function (event) {
-
-    console.log("Voice Error:", event.error);
-
-    if (event.error === "not-allowed") {
-      alert("❌ Microphone permission denied. Please allow mic access.");
-    }
-    else if (event.error === "network") {
-      alert("⚠️ Speech service network error. Try again.");
-    }
-    else {
-      alert("⚠️ Voice input failed. Use Desktop Chrome.");
-    }
-
-    inputBox.placeholder = "Type your message...";
-  };
-
-  // ===============================
-  // ✅ When Voice Stops
-  // ===============================
   recognition.onend = function () {
-    inputBox.placeholder = "Type your message...";
+    document.getElementById("userInput").placeholder =
+      "Type your message...";
   };
 }
+
+// ===============================
+// ✅ Clear Chat
+// ===============================
+function clearChat() {
+  document.getElementById("chatBox").innerHTML = "";
+}
+
+// ===============================
+// ✅ Scroll Bottom
+// ===============================
+function scrollToBottom(chatBox) {
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// ===============================
+// ✅ Escape HTML
+// ===============================
+function escapeHTML(text) {
+  return text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+// ===============================
+// ✅ Enter Key Support
+// ===============================
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("userInput").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") sendMessage();
+  });
+});
