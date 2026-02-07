@@ -201,3 +201,54 @@ body {
   background: crimson !important;
   border-color: red;
 }
+
+/* =============================== */
+/* 🔥 Bot Link Buttons Styling     */
+/* =============================== */
+
+.bot-links {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* YouTube Button */
+.yt-btn {
+  padding: 10px 16px;
+  background: #ff0000;
+  color: white;
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: 0.2s;
+}
+
+.yt-btn:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* Instagram Button */
+.insta-btn {
+  padding: 10px 16px;
+  background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af);
+  color: white;
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: 0.2s;
+}
+
+.insta-btn:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
