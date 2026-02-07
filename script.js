@@ -1,67 +1,84 @@
 // ===============================
-// ✅ Voice Input Function (Mobile Safe Fix)
+// ✅ Voice Input Function (Final Safe Version)
 // ===============================
 function startVoice() {
-
-  // 🔊 Play Mic Click Sound
-  let sound = new Audio("click.mp3");
-  sound.play();
 
   // ✅ Detect Mobile Device
   let isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-  // ❌ Mobile Voice Not Supported Properly
+  // ❌ Android/iPhone Browsers Do Not Support Proper Speech API
   if (isMobile) {
     alert(
-      "⚠️ Voice input is not supported properly on Android mobile browsers.\n\nUse Desktop/Chromebook for best results."
+      "⚠️ Voice input is not working properly on Android/iPhone browsers.\n\nPlease use Chromebook/Desktop Chrome for Voice Support."
     );
     return;
   }
 
-  // Check Browser Support
+  // ✅ Play Mic Click Sound (Desktop Only)
+  try {
+    let sound = new Audio("click.mp3");
+    sound.play();
+  } catch (e) {
+    console.log("Sound play blocked:", e);
+  }
+
+  // ✅ Check Browser Support
   if (!("webkitSpeechRecognition" in window)) {
     alert("❌ Voice recognition not supported in this browser.");
     return;
   }
 
+  // ✅ Create Recognition Object
   let recognition = new webkitSpeechRecognition();
 
-  // Language Setting
   recognition.lang = "en-US";
   recognition.continuous = false;
   recognition.interimResults = false;
 
-  // Start Voice Listening
+  // ✅ Start Listening
   recognition.start();
 
-  // Show Listening Status
-  document.getElementById("userInput").placeholder =
-    "🎤 Listening... Speak now";
+  // UI Update
+  let inputBox = document.getElementById("userInput");
+  inputBox.placeholder = "🎤 Listening... Speak now";
 
-  // When Voice Result Comes
+  // ===============================
+  // ✅ Voice Result
+  // ===============================
   recognition.onresult = function (event) {
     let voiceText = event.results[0][0].transcript;
 
-    document.getElementById("userInput").value = voiceText;
+    // Put voice text into input box
+    inputBox.value = voiceText;
 
-    document.getElementById("userInput").placeholder =
-      "Type your message...";
+    // Restore placeholder
+    inputBox.placeholder = "Type your message...";
   };
 
-  // Better Error Handling
+  // ===============================
+  // ✅ Voice Error Handling
+  // ===============================
   recognition.onerror = function (event) {
 
     console.log("Voice Error:", event.error);
 
-    alert("⚠️ Voice input failed. Please use Desktop Chrome.");
+    if (event.error === "not-allowed") {
+      alert("❌ Microphone permission denied. Please allow mic access.");
+    }
+    else if (event.error === "network") {
+      alert("⚠️ Speech service network error. Try again.");
+    }
+    else {
+      alert("⚠️ Voice input failed. Use Desktop Chrome.");
+    }
 
-    document.getElementById("userInput").placeholder =
-      "Type your message...";
+    inputBox.placeholder = "Type your message...";
   };
 
-  // When Voice Stops
+  // ===============================
+  // ✅ When Voice Stops
+  // ===============================
   recognition.onend = function () {
-    document.getElementById("userInput").placeholder =
-      "Type your message...";
+    inputBox.placeholder = "Type your message...";
   };
 }
