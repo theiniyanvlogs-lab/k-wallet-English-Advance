@@ -16,6 +16,20 @@ export default async function handler(req, res) {
       });
     }
 
+    // ===============================
+    // ✅ Generate YouTube + Instagram Links
+    // ===============================
+    const youtubeLink =
+      "https://www.youtube.com/results?search_query=" +
+      encodeURIComponent(message);
+
+    const instagramLink =
+      "https://www.instagram.com/explore/tags/" +
+      message.replace(/\s+/g, "");
+
+    // ===============================
+    // ✅ Call Groq API
+    // ===============================
     const response = await fetch(
       "https://api.groq.com/openai/v1/chat/completions",
       {
@@ -25,7 +39,7 @@ export default async function handler(req, res) {
           Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
         },
         body: JSON.stringify({
-          model: "llama-3.1-8b-instant", // ✅ Supported model
+          model: "llama-3.1-8b-instant",
           messages: [
             {
               role: "system",
@@ -46,9 +60,15 @@ export default async function handler(req, res) {
       });
     }
 
+    // ===============================
+    // ✅ Send Reply + Links Back
+    // ===============================
     return res.status(200).json({
       reply: data.choices[0].message.content,
+      youtube: youtubeLink,
+      instagram: instagramLink,
     });
+
   } catch (err) {
     return res.status(500).json({
       error: err.message,
