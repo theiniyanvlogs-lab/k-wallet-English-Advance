@@ -111,7 +111,7 @@ async function sendMessage() {
     `;
 
     // ===============================
-    // 🔗 Update Links Section Also (Bottom Area)
+    // 🔗 Update Links Section Also
     // ===============================
     if (data.youtube) {
       document.getElementById("youtubeLink").href = data.youtube;
@@ -139,9 +139,13 @@ async function sendMessage() {
 }
 
 // ===============================
-// ✅ Voice Input Function (🎤 Added)
+// ✅ Voice Input Function (🎤 + Sound Added)
 // ===============================
 function startVoice() {
+
+  // 🔊 Play Mic Click Sound
+  let sound = new Audio("click.mp3");
+  sound.play();
 
   // Check Browser Support
   if (!("webkitSpeechRecognition" in window)) {
