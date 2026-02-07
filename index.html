@@ -6,7 +6,6 @@
   <title>Talkies Chatbot</title>
 
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="data:,">
 </head>
 
 <body>
@@ -21,35 +20,15 @@
       </div>
     </div>
 
-    <div class="status">
-      <span class="dot blue"></span> LOCALIZED
-      <span class="dot green"></span> AI ONLINE
-
-      <button type="button" class="clear-btn" onclick="clearChat()">
-        Clear Chat
-      </button>
-    </div>
+    <button type="button" class="clear-btn" onclick="clearChat()">
+      Clear Chat
+    </button>
   </header>
 
   <!-- CHAT AREA -->
   <main class="chat-area" id="chatBox"></main>
 
-  <!-- RELATED LINKS -->
-  <section class="links-area">
-    <h3>🔍 Related Links</h3>
-
-    <div class="link-item">
-      📺 YouTube:
-      <a id="youtubeLink" href="#" target="_blank">No link yet</a>
-    </div>
-
-    <div class="link-item">
-      📸 Instagram:
-      <a id="instagramLink" href="#" target="_blank">No link yet</a>
-    </div>
-  </section>
-
-  <!-- INPUT BOX -->
+  <!-- INPUT BAR -->
   <footer class="input-bar">
 
     <input
@@ -60,14 +39,18 @@
     />
 
     <!-- Voice Button -->
-    <button type="button" class="voice-btn" onclick="startVoice()">🎤</button>
+    <button type="button" class="voice-btn" onclick="startVoice()">
+      🎤
+    </button>
 
     <!-- Send Button -->
-    <button type="button" class="send-btn" onclick="sendMessage()">➤</button>
+    <button type="button" class="send-btn" onclick="sendMessage()">
+      ➤
+    </button>
 
   </footer>
 
-  <!-- ✅ Script Load Fix -->
+  <!-- Script -->
   <script src="./script.js" defer></script>
 
 </body>
