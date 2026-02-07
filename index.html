@@ -24,7 +24,9 @@
       <span class="dot green"></span> AI ONLINE
 
       <!-- Clear Chat Button -->
-      <button class="clear-btn" onclick="clearChat()">Clear Chat</button>
+      <button type="button" class="clear-btn" onclick="clearChat()">
+        Clear Chat
+      </button>
     </div>
   </header>
 
@@ -56,13 +58,30 @@
   <footer class="input-bar">
 
     <!-- Text Input -->
-    <input type="text" id="userInput" placeholder="Type your message..." />
+    <input
+      type="text"
+      id="userInput"
+      placeholder="Type your message..."
+      autocomplete="off"
+    />
 
     <!-- Voice Input Button -->
-    <button class="voice-btn" onclick="startVoice()">🎤</button>
+    <button
+      type="button"
+      class="voice-btn"
+      onclick="startVoice()"
+    >
+      🎤
+    </button>
 
     <!-- Send Button -->
-    <button class="send-btn" onclick="sendMessage()">➤</button>
+    <button
+      type="button"
+      class="send-btn"
+      onclick="sendMessage()"
+    >
+      ➤
+    </button>
 
   </footer>
 
