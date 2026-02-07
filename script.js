@@ -65,12 +65,53 @@ async function sendMessage() {
       return;
     }
 
+    // ===============================
+    // ✅ Bot Reply + Beautiful Buttons
+    // ===============================
     botDiv.innerHTML = `
       <p class="eng">${escapeHTML(data.reply).replace(/\n/g, "<br>")}</p>
+
+      <div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
+
+        <!-- YouTube Button -->
+        <a href="${data.youtube}" target="_blank"
+          style="
+            padding:10px 16px;
+            background:#ff0000;
+            color:white;
+            border-radius:12px;
+            text-decoration:none;
+            font-size:14px;
+            font-weight:bold;
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+          ">
+          📺 YouTube
+        </a>
+
+        <!-- Instagram Button -->
+        <a href="${data.instagram}" target="_blank"
+          style="
+            padding:10px 16px;
+            background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);
+            color:white;
+            border-radius:12px;
+            text-decoration:none;
+            font-size:14px;
+            font-weight:bold;
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+          ">
+          📸 Instagram
+        </a>
+
+      </div>
     `;
 
     // ===============================
-    // 🔗 Update YouTube + Instagram Links (From Backend)
+    // 🔗 Update Links Section Also (Bottom Area)
     // ===============================
     if (data.youtube) {
       document.getElementById("youtubeLink").href = data.youtube;
