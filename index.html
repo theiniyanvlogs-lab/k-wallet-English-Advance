@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Talkies Chatbot</title>
 
-  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:,">
 </head>
 
 <body>
@@ -25,7 +25,6 @@
       <span class="dot blue"></span> LOCALIZED
       <span class="dot green"></span> AI ONLINE
 
-      <!-- Clear Chat Button -->
       <button type="button" class="clear-btn" onclick="clearChat()">
         Clear Chat
       </button>
@@ -33,33 +32,26 @@
   </header>
 
   <!-- CHAT AREA -->
-  <main class="chat-area" id="chatBox">
-    <!-- Chat messages will appear here -->
-  </main>
+  <main class="chat-area" id="chatBox"></main>
 
-  <!-- 🔗 Related Links Section -->
-  <section class="links-area" id="linksBox">
+  <!-- RELATED LINKS -->
+  <section class="links-area">
     <h3>🔍 Related Links</h3>
 
     <div class="link-item">
       📺 YouTube:
-      <a id="youtubeLink" href="#" target="_blank">
-        No link yet
-      </a>
+      <a id="youtubeLink" href="#" target="_blank">No link yet</a>
     </div>
 
     <div class="link-item">
       📸 Instagram:
-      <a id="instagramLink" href="#" target="_blank">
-        No link yet
-      </a>
+      <a id="instagramLink" href="#" target="_blank">No link yet</a>
     </div>
   </section>
 
   <!-- INPUT BOX -->
   <footer class="input-bar">
 
-    <!-- Text Input -->
     <input
       type="text"
       id="userInput"
@@ -67,27 +59,15 @@
       autocomplete="off"
     />
 
-    <!-- Voice Input Button -->
-    <button
-      type="button"
-      class="voice-btn"
-      onclick="startVoice()"
-    >
-      🎤
-    </button>
+    <!-- Voice Button -->
+    <button type="button" class="voice-btn" onclick="startVoice()">🎤</button>
 
     <!-- Send Button -->
-    <button
-      type="button"
-      class="send-btn"
-      onclick="sendMessage()"
-    >
-      ➤
-    </button>
+    <button type="button" class="send-btn" onclick="sendMessage()">➤</button>
 
   </footer>
 
-  <!-- ✅ FIX: Script Must Load Properly -->
+  <!-- ✅ Script Load Fix -->
   <script src="./script.js" defer></script>
 
 </body>
