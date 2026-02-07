@@ -13,6 +13,22 @@ async function sendMessage() {
   input.disabled = true;
 
   // ===============================
+  // 🔗 Update YouTube + Instagram Links
+  // ===============================
+  document.getElementById("youtubeLink").href =
+    "https://www.youtube.com/results?search_query=" + encodeURIComponent(msg);
+
+  document.getElementById("youtubeLink").innerText =
+    "Open YouTube Results";
+
+  document.getElementById("instagramLink").href =
+    "https://www.instagram.com/explore/tags/" +
+    msg.replace(/\s+/g, "");
+
+  document.getElementById("instagramLink").innerText =
+    "Open Instagram Tag";
+
+  // ===============================
   // Show User Message (Safe)
   // ===============================
   chatBox.innerHTML += `
@@ -102,7 +118,8 @@ function startVoice() {
   recognition.start();
 
   // Show Listening Status
-  document.getElementById("userInput").placeholder = "🎤 Listening... Speak now";
+  document.getElementById("userInput").placeholder =
+    "🎤 Listening... Speak now";
 
   // When Voice Result Comes
   recognition.onresult = function (event) {
@@ -112,18 +129,21 @@ function startVoice() {
     document.getElementById("userInput").value = voiceText;
 
     // Restore Placeholder
-    document.getElementById("userInput").placeholder = "Type your message...";
+    document.getElementById("userInput").placeholder =
+      "Type your message...";
   };
 
   // Error Handling
   recognition.onerror = function () {
     alert("⚠️ Voice input error. Try again.");
-    document.getElementById("userInput").placeholder = "Type your message...";
+    document.getElementById("userInput").placeholder =
+      "Type your message...";
   };
 
   // When Voice Stops
   recognition.onend = function () {
-    document.getElementById("userInput").placeholder = "Type your message...";
+    document.getElementById("userInput").placeholder =
+      "Type your message...";
   };
 }
 
