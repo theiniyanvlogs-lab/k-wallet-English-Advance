@@ -13,22 +13,6 @@ async function sendMessage() {
   input.disabled = true;
 
   // ===============================
-  // 🔗 Update YouTube + Instagram Links
-  // ===============================
-  document.getElementById("youtubeLink").href =
-    "https://www.youtube.com/results?search_query=" + encodeURIComponent(msg);
-
-  document.getElementById("youtubeLink").innerText =
-    "Open YouTube Results";
-
-  document.getElementById("instagramLink").href =
-    "https://www.instagram.com/explore/tags/" +
-    msg.replace(/\s+/g, "");
-
-  document.getElementById("instagramLink").innerText =
-    "Open Instagram Tag";
-
-  // ===============================
   // Show User Message (Safe)
   // ===============================
   chatBox.innerHTML += `
@@ -84,6 +68,21 @@ async function sendMessage() {
     botDiv.innerHTML = `
       <p class="eng">${escapeHTML(data.reply).replace(/\n/g, "<br>")}</p>
     `;
+
+    // ===============================
+    // 🔗 Update YouTube + Instagram Links (From Backend)
+    // ===============================
+    if (data.youtube) {
+      document.getElementById("youtubeLink").href = data.youtube;
+      document.getElementById("youtubeLink").innerText =
+        "Open YouTube Results";
+    }
+
+    if (data.instagram) {
+      document.getElementById("instagramLink").href = data.instagram;
+      document.getElementById("instagramLink").innerText =
+        "Open Instagram Tag";
+    }
 
   } catch (err) {
     botDiv.innerHTML = `
