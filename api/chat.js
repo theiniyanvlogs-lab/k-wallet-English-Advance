@@ -1,18 +1,26 @@
 export default async function handler(req, res) {
+
+  // ✅ Only POST allowed
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Only POST allowed" });
+    return res.status(405).json({
+      error: "Only POST allowed"
+    });
   }
 
   try {
     const { message } = req.body;
 
+    // ✅ Validate input
     if (!message) {
-      return res.status(400).json({ error: "Message required" });
+      return res.status(400).json({
+        error: "Message required"
+      });
     }
 
+    // ✅ API Key check
     if (!process.env.GROQ_API_KEY) {
       return res.status(500).json({
-        error: "Missing GROQ_API_KEY in Vercel Environment Variables",
+        error: "Missing GROQ_API_KEY in Vercel Environment Variables"
       });
     }
 
@@ -44,9 +52,12 @@ export default async function handler(req, res) {
             {
               role: "system",
               content:
-                "Reply ONLY in bullet points. Each line must start with '- '. English only.",
+                "Reply ONLY in clean bullet points. English only."
             },
-            { role: "user", content: message },
+            {
+              role: "user",
+              content: message
+            }
           ],
         }),
       }
@@ -59,7 +70,7 @@ export default async function handler(req, res) {
     // ===============================
     if (!response.ok) {
       return res.status(500).json({
-        error: data.error?.message || "Groq API failed",
+        error: data.error?.message || "Groq API failed"
       });
     }
 
@@ -68,7 +79,7 @@ export default async function handler(req, res) {
     // ===============================
     if (!data.choices || !data.choices[0]?.message?.content) {
       return res.status(500).json({
-        error: "No reply received from Groq API",
+        error: "No reply received from Groq API"
       });
     }
 
@@ -78,12 +89,12 @@ export default async function handler(req, res) {
     return res.status(200).json({
       reply: data.choices[0].message.content,
       youtube: youtubeLink,
-      instagram: instagramLink,
+      instagram: instagramLink
     });
 
   } catch (err) {
     return res.status(500).json({
-      error: err.message,
+      error: err.message
     });
   }
 }
