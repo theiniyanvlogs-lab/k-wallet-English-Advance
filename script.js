@@ -1,151 +1,22 @@
 // ===============================
-// ✅ Chatbot Send Message Function
-// ===============================
-async function sendMessage() {
-  let input = document.getElementById("userInput");
-  let msg = input.value.trim();
-
-  if (msg === "") return;
-
-  let chatBox = document.getElementById("chatBox");
-
-  // ✅ Disable input while sending
-  input.disabled = true;
-
-  // ===============================
-  // Show User Message (Safe)
-  // ===============================
-  chatBox.innerHTML += `
-    <div class="msg user">${escapeHTML(msg)}</div>
-  `;
-
-  input.value = "";
-
-  // ===============================
-  // Bot Placeholder
-  // ===============================
-  let botDiv = document.createElement("div");
-  botDiv.className = "msg bot";
-  botDiv.innerHTML = `<p class="eng">🤖 Thinking...</p>`;
-  chatBox.appendChild(botDiv);
-
-  scrollToBottom(chatBox);
-
-  try {
-    // ===============================
-    // Call Backend API (/api/chat)
-    // ===============================
-    let response = await fetch("/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ message: msg })
-    });
-
-    let data = await response.json();
-
-    // ===============================
-    // Handle API Errors
-    // ===============================
-    if (!response.ok || data.error) {
-      botDiv.innerHTML = `
-        <p class="eng">⚠️ Error: ${data.error || "Something went wrong"}</p>
-      `;
-      input.disabled = false;
-      return;
-    }
-
-    // ===============================
-    // Show Bot Reply
-    // ===============================
-    if (!data.reply) {
-      botDiv.innerHTML = `<p class="eng">⚠️ No reply received</p>`;
-      input.disabled = false;
-      return;
-    }
-
-    // ===============================
-    // ✅ Bot Reply + Beautiful Buttons
-    // ===============================
-    botDiv.innerHTML = `
-      <p class="eng">${escapeHTML(data.reply).replace(/\n/g, "<br>")}</p>
-
-      <div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
-
-        <!-- YouTube Button -->
-        <a href="${data.youtube}" target="_blank"
-          style="
-            padding:10px 16px;
-            background:#ff0000;
-            color:white;
-            border-radius:12px;
-            text-decoration:none;
-            font-size:14px;
-            font-weight:bold;
-            display:inline-flex;
-            align-items:center;
-            gap:6px;
-          ">
-          📺 YouTube
-        </a>
-
-        <!-- Instagram Button -->
-        <a href="${data.instagram}" target="_blank"
-          style="
-            padding:10px 16px;
-            background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);
-            color:white;
-            border-radius:12px;
-            text-decoration:none;
-            font-size:14px;
-            font-weight:bold;
-            display:inline-flex;
-            align-items:center;
-            gap:6px;
-          ">
-          📸 Instagram
-        </a>
-
-      </div>
-    `;
-
-    // ===============================
-    // 🔗 Update Links Section Also
-    // ===============================
-    if (data.youtube) {
-      document.getElementById("youtubeLink").href = data.youtube;
-      document.getElementById("youtubeLink").innerText =
-        "Open YouTube Results";
-    }
-
-    if (data.instagram) {
-      document.getElementById("instagramLink").href = data.instagram;
-      document.getElementById("instagramLink").innerText =
-        "Open Instagram Tag";
-    }
-
-  } catch (err) {
-    botDiv.innerHTML = `
-      <p class="eng">❌ Server not responding. Please try again.</p>
-    `;
-  }
-
-  // ✅ Enable input again
-  input.disabled = false;
-  input.focus();
-
-  scrollToBottom(chatBox);
-}
-
-// ===============================
-// ✅ Voice Input Function (🎤 + Sound Added)
+// ✅ Voice Input Function (Mobile Safe Fix)
 // ===============================
 function startVoice() {
 
   // 🔊 Play Mic Click Sound
   let sound = new Audio("click.mp3");
   sound.play();
+
+  // ✅ Detect Mobile Device
+  let isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  // ❌ Mobile Voice Not Supported Properly
+  if (isMobile) {
+    alert(
+      "⚠️ Voice input is not supported properly on Android mobile browsers.\n\nUse Desktop/Chromebook for best results."
+    );
+    return;
+  }
 
   // Check Browser Support
   if (!("webkitSpeechRecognition" in window)) {
@@ -157,6 +28,8 @@ function startVoice() {
 
   // Language Setting
   recognition.lang = "en-US";
+  recognition.continuous = false;
+  recognition.interimResults = false;
 
   // Start Voice Listening
   recognition.start();
@@ -169,17 +42,19 @@ function startVoice() {
   recognition.onresult = function (event) {
     let voiceText = event.results[0][0].transcript;
 
-    // Put Voice Text into Input Box
     document.getElementById("userInput").value = voiceText;
 
-    // Restore Placeholder
     document.getElementById("userInput").placeholder =
       "Type your message...";
   };
 
-  // Error Handling
-  recognition.onerror = function () {
-    alert("⚠️ Voice input error. Try again.");
+  // Better Error Handling
+  recognition.onerror = function (event) {
+
+    console.log("Voice Error:", event.error);
+
+    alert("⚠️ Voice input failed. Please use Desktop Chrome.");
+
     document.getElementById("userInput").placeholder =
       "Type your message...";
   };
@@ -190,42 +65,3 @@ function startVoice() {
       "Type your message...";
   };
 }
-
-// ===============================
-// ✅ Clear Chat Button Function
-// ===============================
-function clearChat() {
-  document.getElementById("chatBox").innerHTML = "";
-}
-
-// ===============================
-// ✅ Auto Scroll Function
-// ===============================
-function scrollToBottom(chatBox) {
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-// ===============================
-// ✅ Escape HTML (Security Fix)
-// ===============================
-function escapeHTML(text) {
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-// ===============================
-// ✅ Enter Key Support
-// ===============================
-document.addEventListener("DOMContentLoaded", function () {
-  let input = document.getElementById("userInput");
-
-  input.addEventListener("keydown", function (event) {
-    if (event.key === "Enter") {
-      sendMessage();
-    }
-  });
-});
